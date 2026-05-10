@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Responsive en celular -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Nombre de la app -->
+    <title>Split PWA</title>
+
+    <!-- Manifest de la PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Color de la barra superior del navegador -->
+    <meta name="theme-color" content="#111827" />
+
+    <!-- Configuración útil para iPhone -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="SplittyPie PWA" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Ícono que usa iOS al agregar a pantalla de inicio -->
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+
+  <body>
+    <main id="app">
+      <section class="app-card">
+        <h1>Split PWA</h1>
+        <p>Aplicación básica para dividir gastos.</p>
+
+        <button id="save-button">
+          Guardar gasto de prueba
+        </button>
+
+        <p id="status"></p>
+      </section>
+    </main>
+
+    <!-- JavaScript principal -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
