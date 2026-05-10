@@ -1,28 +1,55 @@
+import "./styles.css";
+
+import { getCurrentUser } from "./auth.js";
+import { enableNotifications } from "./notifications.js";
+
 const app = document.querySelector("#app");
 
 app.innerHTML = `
-  <section>
+  <section class="app-card">
     <h1>Split PWA</h1>
-    <p>App básica para dividir gastos.</p>
+    <p>Demo básica con Firebase</p>
 
-    <button id="save-button">Guardar gasto de prueba</button>
+    <button id="login-button">Crear usuario anónimo</button>
+    <button id="notifications-button">Activar notificaciones</button>
+
     <p id="status"></p>
   </section>
 `;
 
-document.querySelector("#save-button").addEventListener("click", () => {
-  localStorage.setItem("expense", "Gasto guardado offline");
-  document.querySelector("#status").textContent = "Gasto guardado localmente";
+function setStatus(message) {
+  document.querySelector("#status").textContent = message;
+}
+
+async function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    setStatus("Service Worker no soportado");
+    return;
+  }
+
+  await navigator.serviceWorker.register("/sw.js");
+  await navigator.serviceWorker.ready;
+}
+
+document.querySelector("#login-button").addEventListener("click", async () => {
+  try {
+    const user = await getCurrentUser();
+    setStatus(`Usuario anónimo creado: ${user.uid}`);
+  } catch (error) {
+    console.error(error);
+    setStatus(error.message);
+  }
 });
 
-const savedExpense = localStorage.getItem("expense");
+document.querySelector("#notifications-button").addEventListener("click", async () => {
+  try {
+    const token = await enableNotifications();
+    console.log("FCM token:", token);
+    setStatus("Token FCM guardado en Firestore");
+  } catch (error) {
+    console.error(error);
+    setStatus(error.message);
+  }
+});
 
-if (savedExpense) {
-  document.querySelector("#status").textContent = savedExpense;
-}
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js")
-    .then(() => console.log("Service Worker registrado"))
-    .catch(error => console.error("Error registrando SW:", error));
-}
+await registerServiceWorker();
