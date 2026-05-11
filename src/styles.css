@@ -13,7 +13,7 @@ main {
 }
 
 section {
-  max-width: 420px;
+  max-width: 520px;
   width: 100%;
 }
 
@@ -22,4 +22,229 @@ button {
   border: 0;
   border-radius: 8px;
   cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.app-card {
+  background: #1f2937;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.current-split-banner {
+  margin: 0 0 1rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #111827;
+  border: 1px solid #374151;
+  font-size: 0.95rem;
+  color: #e5e7eb;
+  line-height: 1.4;
+}
+
+.current-split-banner:not([hidden]) {
+  display: block;
+}
+
+.panel {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #374151;
+}
+
+.panel:last-of-type {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.panel-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.panel-desc {
+  margin: 0 0 0.75rem;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.65rem 0;
+  font-size: 0.85rem;
+  color: #d1d5db;
+}
+
+.field input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 1rem;
+}
+
+.field input:focus {
+  outline: 2px solid #3b82f6;
+  border-color: transparent;
+}
+
+.field-select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.field-select:focus {
+  outline: 2px solid #3b82f6;
+  border-color: transparent;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
+.hint-access {
+  margin-top: 0.75rem;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #1e3a5f;
+  border: 1px solid #3b82f6;
+  color: #bfdbfe;
+}
+
+.status {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  min-height: 1.25em;
+}
+
+.balances-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.balance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.balance-name {
+  font-weight: 600;
+}
+
+.balance-name small {
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.balance-amt {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.balance-positive .balance-amt {
+  color: #6ee7b7;
+}
+
+.balance-negative .balance-amt {
+  color: #fca5a5;
+}
+
+.balance-zero .balance-amt {
+  color: #9ca3af;
+}
+
+.balance-empty {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  padding: 8px 0;
+}
+
+.subheading {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.paid-totals-list,
+.expenses-detail-list {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+
+.expense-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.expense-total-name small {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.expense-total-amt {
+  font-variant-numeric: tabular-nums;
+  color: #93c5fd;
+  white-space: nowrap;
+}
+
+.expense-detail-row {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: #111827;
+  border-left: 3px solid #3b82f6;
+}
+
+.expense-detail-main {
+  margin-bottom: 4px;
+}
+
+.expense-detail-meta {
+  font-size: 0.8rem;
+  color: #9ca3af;
 }

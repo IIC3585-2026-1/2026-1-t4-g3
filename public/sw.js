@@ -1,11 +1,9 @@
-const CACHE_NAME = "split-pwa-v2";
+const CACHE_NAME = "split-pwa-v4";
 
+// No precachear JS/CSS: si no, el SW sirve siempre una versión vieja de main.js y los botones nuevos “no funcionan”.
 const APP_SHELL = [
   "/",
   "/index.html",
-  "/src/main.js",
-  "/src/router.js",
-  "/src/styles/main.css",
   "/manifest.webmanifest",
   "/icons/icon-192.png",
   "/icons/icon-512.png"
@@ -31,6 +29,7 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   const request = event.request;
+  const url = new URL(request.url);
 
   if (request.mode === "navigate") {
     event.respondWith(
@@ -39,9 +38,19 @@ self.addEventListener("fetch", event => {
     return;
   }
 
+  if (
+    url.pathname.startsWith("/src/") ||
+    url.pathname.startsWith("/@") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".css")
+  ) {
+    event.respondWith(
+      fetch(request).catch(() => caches.match(request))
+    );
+    return;
+  }
+
   event.respondWith(
-    caches.match(request).then(cachedResponse => {
-      return cachedResponse || fetch(request);
-    })
+    caches.match(request).then((cachedResponse) => cachedResponse || fetch(request))
   );
 });

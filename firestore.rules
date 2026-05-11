@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function splitDoc(splitId) {
+      return get(/databases/$(database)/documents/splits/$(splitId)).data;
+    }
+
+    function isSplitMember(splitId) {
+      let s = splitDoc(splitId);
+      return request.auth != null && (
+        request.auth.uid == s.ownerUid ||
+        request.auth.uid in s.memberUids
+      );
+    }
+
+    function memberSelfJoin(before, after) {
+      return before.ownerUid == after.ownerUid &&
+        before.participantCount == after.participantCount &&
+        after.memberUids.hasAll(before.memberUids) &&
+        !(request.auth.uid in before.memberUids) &&
+        request.auth.uid in after.memberUids;
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /fcmTokens/{tokenId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    match /splits/{splitId} {
+      allow read: if request.auth != null && (
+        resource.data.ownerUid == request.auth.uid ||
+        request.auth.uid in resource.data.memberUids
+      );
+
+      allow create: if request.auth != null &&
+        request.resource.data.ownerUid == request.auth.uid;
+
+      allow update, delete: if request.auth != null &&
+        resource.data.ownerUid == request.auth.uid;
+
+      allow update: if request.auth != null &&
+        memberSelfJoin(resource.data, request.resource.data);
+
+      match /participants/{participantId} {
+        allow read: if isSplitMember(splitId);
+        allow write: if request.auth != null &&
+          splitDoc(splitId).ownerUid == request.auth.uid;
+      }
+
+      match /expenses/{expenseId} {
+        allow read: if isSplitMember(splitId);
+        allow create: if request.auth != null && isSplitMember(splitId);
+      }
+    }
+  }
+}
