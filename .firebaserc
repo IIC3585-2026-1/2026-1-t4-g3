@@ -1,7 +1,6 @@
 {
   "projects": {
-    "default": "trabajo-4-f8f00",
-    "production": "trabajo-4-f8f00"
+    "staging": "pwa-web-avanzado-775e3"
   },
   "targets": {},
   "etags": {}

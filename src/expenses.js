@@ -2,7 +2,6 @@ import {
   arrayUnion,
   collection,
   doc,
-  getDoc,
   serverTimestamp,
   setDoc,
   updateDoc
@@ -19,15 +18,20 @@ export async function joinSplit(splitId) {
 
   const user = await getCurrentUser();
   const splitRef = doc(db, "splits", trimmed);
-  const snap = await getDoc(splitRef);
 
-  if (!snap.exists()) {
-    throw new Error("Reparto no encontrado.");
+  // Las reglas no permiten leer el split antes de unirse, así que vamos
+  // directos al updateDoc (regla memberSelfJoin). Si el ID no existe o el
+  // dueño no permite el acceso, Firestore lanza permission-denied.
+  try {
+    await updateDoc(splitRef, {
+      memberUids: arrayUnion(user.uid)
+    });
+  } catch (err) {
+    if (err?.code === "permission-denied") {
+      throw new Error("No se pudo unir al reparto: revisa el ID.");
+    }
+    throw err;
   }
-
-  await updateDoc(splitRef, {
-    memberUids: arrayUnion(user.uid)
-  });
 }
 
 /**

@@ -1,7 +1,8 @@
 import "./styles.css";
 
 import { getCurrentUser } from "./auth.js";
-import { enableNotifications } from "./notifications.js";
+import { enableNotifications, registerMessagingServiceWorker } from "./notifications.js";
+import { notifyExpenseAdded } from "./notifyServer.js";
 import { createSplitWithParticipants } from "./split.js";
 import { addExpense, joinSplit } from "./expenses.js";
 import { loadSplitBalances, loadSplitExpenseSheet } from "./balances.js";
@@ -277,14 +278,18 @@ async function renderExpenseSheet() {
       })
       .join("");
   } catch (e) {
-    console.error(e);
     paidEl.innerHTML = "";
     detailEl.innerHTML = "";
     fillPaidBySelect([]);
     updateSplitBanner("", "");
     lastLoadedSplitId = "";
     setSplitSessionActive(false);
-    setStatus(e.message);
+    if (e?.code === "permission-denied") {
+      setStatus("No tienes acceso a este reparto. Si te pasaron el ID, pulsa Unirme.");
+    } else {
+      console.error(e);
+      setStatus(e.message);
+    }
   }
 }
 
@@ -429,23 +434,30 @@ document.querySelector("#add-expense-button").addEventListener("click", async ()
     return;
   }
   try {
-    await addExpense({ splitId, amount, description, paidByParticipantId });
+    const expenseId = await addExpense({ splitId, amount, description, paidByParticipantId });
     await renderExpenseSheet();
     await renderBalancesForSplit();
     setStatus("Gasto guardado.");
+    try {
+      await notifyExpenseAdded({ splitId, expenseId });
+    } catch (err) {
+      console.error(err);
+    }
   } catch (e) {
     console.error(e);
     setStatus(e.message);
   }
 });
 
-async function registerServiceWorker() {
-  if (!("serviceWorker" in navigator)) {
-    setStatus("Service Worker no soportado");
+function applySplitFromQuery() {
+  const split = new URLSearchParams(window.location.search).get("split")?.trim();
+  if (!split) {
     return;
   }
-  await navigator.serviceWorker.register("/sw.js");
-  await navigator.serviceWorker.ready;
+  const input = document.querySelector("#split-id-input");
+  if (input) {
+    input.value = split;
+  }
 }
 
 document.querySelector("#refresh-balances-button").addEventListener("click", () => {
@@ -484,5 +496,19 @@ document.querySelector("#split-id-input").addEventListener("input", () => {
   }, 400);
 });
 
+applySplitFromQuery();
 applySplitVisibility();
-await registerServiceWorker();
+if (!("serviceWorker" in navigator)) {
+  setStatus("Service Worker no soportado");
+} else {
+  try {
+    await registerMessagingServiceWorker();
+  } catch (e) {
+    console.error(e);
+    setStatus(
+      e.message ||
+        "No se pudo registrar el service worker"
+    );
+  }
+}
+void renderExpenseSheet();

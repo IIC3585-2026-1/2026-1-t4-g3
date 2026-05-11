@@ -4,3 +4,5 @@ dist/
 .env
 .firebase/
 firebase-debug.log
+public/firebase-messaging-config.js
+server/serviceAccountKey.json

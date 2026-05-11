@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
-    "deploy:rules": "firebase deploy --only firestore:rules"
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "notify-server": "npm run start --prefix server"
   },
   "keywords": [],
   "author": "",
